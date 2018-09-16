@@ -7,7 +7,9 @@ char *srvip;
 int  verbose;
 
 static inline void usage (int status) {
-	fprintf(stderr, "%s is Error(%d) \n", CMD, status);
+	fprintf(stderr, "USAGE :%s is Error(%d) \n", CMD, status);
+	fprintf(stderr, "	-h Server IP Address\n");
+	fprintf(stderr, "	-f Copy File Path\n");
 	exit(status);
 }
 
@@ -37,7 +39,18 @@ int get_opt(int argc, char **argv) {
 		usage(-1);
 }
 
-int get_service() {
+FILE *open_file() {
+	FILE *fp;
+	
+	fp = fopen(filepath, "rb");
+	if(!fp) {
+		fprintf(stderr, "fopen() failed(%d)", errno);
+		exit(-1);
+	}
+}
+
+
+int get_service(int sock) {
 	int err;
 	struct sockaddr_in servSockAddr;
 	u_short servPort;
@@ -52,12 +65,40 @@ int get_service() {
 	}
 	
 	servSockAddr.sin_port = SERVICE_PORT;
+
+	if (sock = socket(PF_INET, SOCK_STREAM, IPPROTO_TCP) < 0) {
+		err = errno;
+		fprintf(stderr, "socket() failed(%d). \n", err);
+		exit(-1);
+	}
+
+	if (connect(sock, (struct sockaddr*)&servSockAddr, sizeof(servSockAddr)) < 0) {
+		err = errno;
+		fprintf(stderr, "connetc() failed(%d). \n", err);
+		exit(-1);
+	}
+
+	return sock;
+}
+
+int send_file(FILE *fp) {
+	int ret;
+
+	return 0;
 }
 
 int main (int argc, char **argv) {
 	int sock;
+	FILE *fp;
 
+	/* オプション解析 */
 	get_opt(argc, argv);
 
-	sock = get_service();
+	/* コピー用ファイルの指定 */
+	fp = open_file(fp);
+
+	/* ソケット/コネクション確立 */
+	sock = get_service(sock);
+
+	return 0;
 }
