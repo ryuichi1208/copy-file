@@ -6,6 +6,13 @@ char *filepath;
 char *srvip;
 int  verbose;
 
+struct file_info {
+	FILE *fp;
+	int sock;
+	u_int file_size;
+	u_int trans_size;
+} typedef file_info;
+
 static inline void usage (int status) {
 	fprintf(stderr, "USAGE :%s is Error(%d) \n", CMD, status);
 	fprintf(stderr, "	-h Server IP Address\n");
@@ -41,12 +48,14 @@ int get_opt(int argc, char **argv) {
 
 FILE *open_file() {
 	FILE *fp;
-	
+
 	fp = fopen(filepath, "rb");
 	if(!fp) {
 		fprintf(stderr, "fopen() failed(%d)", errno);
 		exit(-1);
 	}
+
+	return fp;
 }
 
 
@@ -55,7 +64,7 @@ int get_service(int sock) {
 	struct sockaddr_in servSockAddr;
 	u_short servPort;
 
-	memset(&servSockAddr, 0, sizeof(servSockAddr));	
+	memset(&servSockAddr, 0, sizeof(servSockAddr));
 	servSockAddr.sin_family = AF_INET;
 
 	if (inet_aton(srvip, &servSockAddr.sin_addr) == 0) {
@@ -63,7 +72,7 @@ int get_service(int sock) {
 		fprintf(stderr, "Invalid IP Address(%d).\n", err);
 		exit(-1);
 	}
-	
+
 	servSockAddr.sin_port = SERVICE_PORT;
 
 	if (sock = socket(PF_INET, SOCK_STREAM, IPPROTO_TCP) < 0) {
