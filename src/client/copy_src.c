@@ -20,6 +20,18 @@ static inline void usage (int status) {
 	exit(status);
 }
 
+FILE *open_file() {
+	FILE *fp;
+
+	fp = fopen(filepath, "rb");
+	if(!fp) {
+		fprintf(stderr, "fopen() failed(%d)", errno);
+		exit(-1);
+	}
+
+	return fp;
+}
+
 int get_opt(int argc, char **argv) {
 	int i, opt, optflag;
 
@@ -45,19 +57,6 @@ int get_opt(int argc, char **argv) {
 	if (optflag <= 0)
 		usage(-1);
 }
-
-FILE *open_file() {
-	FILE *fp;
-
-	fp = fopen(filepath, "rb");
-	if(!fp) {
-		fprintf(stderr, "fopen() failed(%d)", errno);
-		exit(-1);
-	}
-
-	return fp;
-}
-
 
 int get_service(int sock) {
 	int err;
