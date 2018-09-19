@@ -4,7 +4,8 @@
 
 char *filepath;
 char *srvip;
-int  verbose;
+static int verbose;
+static int mode;
 
 struct file_info {
 	FILE *fp;
@@ -91,15 +92,24 @@ int get_service(int sock) {
 	return sock;
 }
 
-int send_file(FILE *fp) {
+static void
+get_file_info() {
+	return;
+}
+
+int send_file(file_info fin) {
 	int ret;
 
 	return 0;
 }
 
 int main (int argc, char **argv) {
-	int sock;
+	int sock, ret;
 	FILE *fp;
+
+	/* ファイル情報構造体 */
+	file_info fin;
+	memset(&fin, 0, sizeof(file_info));
 
 	/* オプション解析 */
 	get_opt(argc, argv);
@@ -109,6 +119,14 @@ int main (int argc, char **argv) {
 
 	/* ソケット/コネクション確立 */
 	sock = get_service(sock);
+
+	fin.fp = fp;
+	fin.sock = sock;	
+
+	/* ファイル送信 */
+	ret = send_file(fin);
+	if (!ret)
+		fprintf(stderr, "send() failed\n");
 
 	return 0;
 }
