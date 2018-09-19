@@ -13,7 +13,9 @@
 /* 定数 */
 #define MAX_FILE_SIZE   256
 #define MIN_FILE SIZE   1
-#define SERVICE_PORT	8080
+#define SERVICE_PORT	9000
+#define QUEUELIMIT 	5
+#define DEBAG		0
 
 /* グローバル変数 */
 static int serv;

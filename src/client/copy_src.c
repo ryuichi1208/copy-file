@@ -72,15 +72,23 @@ int get_service(int sock) {
 		exit(-1);
 	}
 
-	servSockAddr.sin_port = SERVICE_PORT;
 
-	if (sock = socket(PF_INET, SOCK_STREAM, IPPROTO_TCP) < 0) {
+	if ((servPort = (unsigned short) atoi("SERVICE_PORT")) == 0) {
+		fprintf(stderr, "invalid port number.\n");
+		exit(EXIT_FAILURE);
+	}
+
+	servSockAddr.sin_port = htons(servPort);
+
+	printf("port %d\n", servSockAddr.sin_port);
+
+	if ((sock = socket(PF_INET, SOCK_STREAM, IPPROTO_TCP)) < 0) {
 		err = errno;
 		fprintf(stderr, "socket() failed(%d). \n", err);
 		exit(-1);
 	}
 
-	if (connect(sock, (struct sockaddr*)&servSockAddr, sizeof(servSockAddr)) < 0) {
+	if (connect(sock, (struct sockaddr*) &servSockAddr, sizeof(servSockAddr)) < 0) {
 		err = errno;
 		fprintf(stderr, "connetc() failed(%d). \n", err);
 		exit(-1);
