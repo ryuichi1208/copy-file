@@ -29,7 +29,7 @@ int main(int argc, char* argv[]) {
 	memset(&servSockAddr, 0, sizeof(servSockAddr));
 	servSockAddr.sin_family      = AF_INET;
 	servSockAddr.sin_addr.s_addr = htonl(INADDR_ANY);
-	servSockAddr.sin_port        = htons(4092);
+	servSockAddr.sin_port        = htons(SERVICE_PORT);
 
 	if (bind(servSock, (struct sockaddr *) &servSockAddr, sizeof(servSockAddr) ) < 0 ) {
 		perror("bind() failed.");

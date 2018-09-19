@@ -72,13 +72,7 @@ int get_service(int sock) {
 		exit(-1);
 	}
 
-
-	if ((servPort = (unsigned short) atoi("SERVICE_PORT")) == 0) {
-		fprintf(stderr, "invalid port number.\n");
-		exit(EXIT_FAILURE);
-	}
-
-	servSockAddr.sin_port = htons(servPort);
+	servSockAddr.sin_port = htons(SERVICE_PORT);
 
 	printf("port %d\n", servSockAddr.sin_port);
 
