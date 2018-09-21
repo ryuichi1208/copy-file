@@ -10,7 +10,7 @@ static int mode;
 struct file_info {
 	FILE *fp;
 	int sock;
-	u_int file_size;
+	off_t file_size;
 	u_int trans_size;
 } typedef file_info;
 
@@ -97,8 +97,19 @@ get_file_info() {
 	return;
 }
 
-int send_file(file_info fin) {
+int send_file(file_info *fin) {
 	int ret;
+	struct stat info;
+
+	ret = lstat(filepath, &info);
+	if (!ret) {
+		fprintf(stderr, "fstat() failed(%d)\n", errno);
+		usage(-1);
+	} else {
+		fin->file_size = info.st_size;
+		if (fin->file_size)
+	}
+	
 
 	return 0;
 }
@@ -108,23 +119,23 @@ int main (int argc, char **argv) {
 	FILE *fp;
 
 	/* ファイル情報構造体 */
-	file_info fin;
-	memset(&fin, 0, sizeof(file_info));
+	file_info *fin;
+	memset(&fin[0], 0, sizeof(file_info));
 
 	/* オプション解析 */
 	get_opt(argc, argv);
 
 	/* コピー用ファイルの指定 */
-	fp = open_file(fp);
+	fp = open_file();
 
 	/* ソケット/コネクション確立 */
 	sock = get_service(sock);
 
-	fin.fp = fp;
-	fin.sock = sock;	
+	fin->fp = fp;
+	fin->sock = sock;	
 
 	/* ファイル送信 */
-	ret = send_file(fin);
+	ret = send_file(&fin);
 	if (!ret)
 		fprintf(stderr, "send() failed\n");
 
